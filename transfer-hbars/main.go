@@ -12,8 +12,8 @@ func main() {
 	user1 := hs.Users[0]
 	user2 := hs.Users[1]
 	trans := hedera.NewTransferTransaction().
-		AddHbarTransfer(user1.AccountId, hedera.HbarFrom(-1000000, hedera.HbarUnits.Tinybar)).
-		AddHbarTransfer(user2.AccountId, hedera.HbarFrom(1000000, hedera.HbarUnits.Tinybar))
+		AddHbarTransfer(user1.AccountId, hedera.HbarFrom(-1000000000, hedera.HbarUnits.Tinybar)).
+		AddHbarTransfer(user2.AccountId, hedera.HbarFrom(1000000000, hedera.HbarUnits.Tinybar))
 
 	txResponse, err := trans.Execute(user1.C)
 	if err != nil {
