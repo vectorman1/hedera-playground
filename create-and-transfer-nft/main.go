@@ -10,6 +10,7 @@ import (
 func main() {
 	hs := client.Setup2TestClients()
 	user1 := hs.Users[0]
+	user2 := hs.Users[1]
 
 	// Create the NFT
 	nftCreate, err := hedera.NewTokenCreateTransaction().
@@ -58,15 +59,46 @@ func main() {
 	mintRx, err := mintTxSubmit.GetReceipt(user1.C)
 	fmt.Println("New NFT", tokenId, "with serial", mintRx.SerialNumbers)
 
-	nftId := hedera.NftID{
-		TokenID:      tokenId,
-		SerialNumber: mintRx.SerialNumbers[0],
-	}
-	nftInfo, err := hedera.NewTokenNftInfoQuery().
-		SetNftID(nftId).
-		Execute(user1.C)
+	// Associate User2's account with the token
+	associateUser2Tx, err := hedera.NewTokenAssociateTransaction().
+		SetAccountID(user2.AccountId).
+		SetTokenIDs(tokenId).
+		FreezeWith(user2.C)
 	if err != nil {
 		log.Fatalln(err)
 	}
-	fmt.Println(nftInfo)
+
+	signTx := associateUser2Tx.Sign(user2.PrivateKey)
+	associateUser2TxSubmit, err := signTx.Execute(user2.C)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	associateUser2Rx, err := associateUser2TxSubmit.GetReceipt(user2.C)
+	fmt.Println("NFT Association with User2's account:", associateUser2Rx.Status)
+
+	// Transfer the NFT to User2's account
+	nftId := hedera.NftID{
+		TokenID:      tokenId,
+		SerialNumber: 1,
+	}
+	tokenTransferTx, err := hedera.NewTransferTransaction().
+		AddNftTransfer(nftId, user1.AccountId, user2.AccountId).
+		FreezeWith(user1.C)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	signTransferTx := tokenTransferTx.Sign(user1.PrivateKey)
+	tokenTransferSubmit, err := signTransferTx.Execute(user1.C)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	tokenTransferRx, err := tokenTransferSubmit.GetReceipt(user1.C)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	fmt.Println("NFT Transfer from User1 (Treasurer) to User2:", tokenTransferRx.Status)
 }
