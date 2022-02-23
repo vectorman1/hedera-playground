@@ -101,4 +101,22 @@ func main() {
 	}
 
 	fmt.Println("NFT Transfer from User1 (Treasurer) to User2:", tokenTransferRx.Status)
+
+	// Check the balance of the treasury account after the transfer
+	balanceCheckUser1, err := hedera.NewAccountBalanceQuery().
+		SetAccountID(user1.AccountId).
+		Execute(user1.C)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	fmt.Println("Treasury balance:", balanceCheckUser1.Tokens, "NFTs of ID", tokenId)
+
+	// Check the balance of Alice's account after the transfer
+	balanceCheckUser2, err := hedera.NewAccountBalanceQuery().
+		SetAccountID(user2.AccountId).
+		Execute(user2.C)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	fmt.Println("User2's balance:", balanceCheckUser2.Tokens, "NFTs of ID", tokenId)
 }
