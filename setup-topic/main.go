@@ -5,11 +5,10 @@ import (
 	"github.com/hashgraph/hedera-sdk-go/v2"
 	client "hedera-playground/_client"
 	"log"
-	"time"
 )
 
 func main() {
-	hs := client.Setup2TestClients()
+	hs := client.Setup1TestClient()
 
 	// Create topic with first user
 	user1 := hs.Users[0]
@@ -18,21 +17,26 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	topicCreateReceipt, err := txResponse.GetReceipt(user1.C)
+	topicCreateRx, err := txResponse.GetReceipt(user1.C)
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	topicId := *topicCreateReceipt.TopicID
-	fmt.Println(topicId)
+	topicId := *topicCreateRx.TopicID
+	fmt.Println("Created topic with ID:", topicId, topicCreateRx.Status)
 
-	// Subscribe to the topic with the second user
-	user2 := hs.Users[1]
+	// Subscribe to the topic
+	received := make(chan struct{})
 	_, err = hedera.NewTopicMessageQuery().
 		SetTopicID(topicId).
-		Subscribe(user2.C, func(msg hedera.TopicMessage) {
-			fmt.Println(msg.ConsensusTimestamp.String(), "received topic message ", string(msg.Contents), "\r")
+		Subscribe(user1.C, func(msg hedera.TopicMessage) {
+			fmt.Println(msg.ConsensusTimestamp.String(), "received topic message", string(msg.Contents), "\r")
+			received <- struct{}{}
 		})
+	if err != nil {
+		log.Fatalln(err)
+	}
+	fmt.Println("Subscribed to topic")
 
 	// Send message on the topic with the first user
 	submitMessage, err := hedera.NewTopicMessageSubmitTransaction().
@@ -42,12 +46,14 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
+	fmt.Println("Sent a message to topic")
 
-	topicSubmitReceipt, err := submitMessage.GetReceipt(user1.C)
+	submitMessageRx, err := submitMessage.GetReceipt(user1.C)
 	if err != nil {
 		log.Fatalln(err)
 	}
-	sendStatus := topicSubmitReceipt.Status
-	fmt.Println("Sending message", sendStatus)
-	time.Sleep(30000)
+	sendStatus := submitMessageRx.Status
+	fmt.Println("Sending message status:", sendStatus.String())
+	fmt.Println("Waiting for receive")
+	<-received
 }
