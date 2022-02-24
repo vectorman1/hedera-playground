@@ -29,7 +29,7 @@ func main() {
 	received := make(chan struct{})
 	_, err = hedera.NewTopicMessageQuery().
 		SetTopicID(topicId).
-		SetStartTime(time.Now()).
+		SetStartTime(time.Unix(0, 0)).
 		Subscribe(user1.C, func(msg hedera.TopicMessage) {
 			log.Println(msg.ConsensusTimestamp.String(), "received topic message", string(msg.Contents), "\r")
 			received <- struct{}{}
@@ -49,13 +49,13 @@ func main() {
 	}
 	log.Println("Sent a message to topic")
 
-	<-received
-
 	submitMessageRx, err := submitMessage.GetReceipt(user1.C)
 	if err != nil {
 		log.Fatalln(err)
 	}
+	
 	sendStatus := submitMessageRx.Status
 	log.Println("Sending message status:", sendStatus.String())
 	log.Println("Waiting for receive")
+	<-received
 }
