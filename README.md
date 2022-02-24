@@ -1,5 +1,4 @@
 # Hedera Playground
-<hr>
 
 This repo contains the examples from the [Hedera documentation](https://docs.hedera.com/guides/), implemented with the [Hedera Go SDK](https://github.com/hashgraph/hedera-sdk-go).
 
