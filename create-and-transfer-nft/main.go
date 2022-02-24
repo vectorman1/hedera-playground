@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/hashgraph/hedera-sdk-go/v2"
 	client "hedera-playground/_client"
 	"log"
@@ -38,7 +37,7 @@ func main() {
 		log.Fatalln(err)
 	}
 	tokenId := *nftCreateRx.TokenID
-	fmt.Printf("Token created: %s\n", tokenId)
+	log.Printf("Token created: %s\n", tokenId)
 
 	// Mint an NFT
 	// Best thing in the world
@@ -57,7 +56,7 @@ func main() {
 		log.Fatalln(err)
 	}
 	mintRx, err := mintTxSubmit.GetReceipt(user1.C)
-	fmt.Println("New NFT", tokenId, "with serial", mintRx.SerialNumbers)
+	log.Println("New NFT", tokenId, "with serial", mintRx.SerialNumbers)
 
 	// Associate User2's account with the token
 	associateUser2Tx, err := hedera.NewTokenAssociateTransaction().
@@ -75,7 +74,7 @@ func main() {
 	}
 
 	associateUser2Rx, err := associateUser2TxSubmit.GetReceipt(user2.C)
-	fmt.Println("NFT Association with User2's account:", associateUser2Rx.Status)
+	log.Println("NFT Association with User2's account:", associateUser2Rx.Status)
 
 	// Transfer the NFT to User2's account
 	nftId := hedera.NftID{
@@ -100,7 +99,7 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	fmt.Println("NFT Transfer from User1 (Treasurer) to User2:", tokenTransferRx.Status)
+	log.Println("NFT Transfer from User1 (Treasurer) to User2:", tokenTransferRx.Status)
 
 	// Check the balance of the treasury account after the transfer
 	balanceCheckUser1, err := hedera.NewAccountBalanceQuery().
@@ -109,7 +108,7 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	fmt.Println("Treasury balance:", balanceCheckUser1.Tokens, "NFTs of ID", tokenId)
+	log.Println("Treasury balance:", balanceCheckUser1.Tokens, "NFTs of ID", tokenId)
 
 	// Check the balance of Alice's account after the transfer
 	balanceCheckUser2, err := hedera.NewAccountBalanceQuery().
@@ -118,5 +117,5 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	fmt.Println("User2's balance:", balanceCheckUser2.Tokens, "NFTs of ID", tokenId)
+	log.Println("User2's balance:", balanceCheckUser2.Tokens, "NFTs of ID", tokenId)
 }

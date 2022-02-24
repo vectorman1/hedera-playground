@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/hashgraph/hedera-sdk-go/v2"
 	client "hedera-playground/_client"
 	"log"
@@ -25,5 +24,5 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	fmt.Println(user1Bal.Hbars.AsTinybar(), user2Bal.Hbars.AsTinybar())
+	log.Println(user1Bal.Hbars.AsTinybar(), user2Bal.Hbars.AsTinybar())
 }

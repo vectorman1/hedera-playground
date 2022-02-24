@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/hashgraph/hedera-sdk-go/v2"
 	client "hedera-playground/_client"
 	"log"
@@ -42,7 +41,7 @@ func main() {
 		log.Fatalln(err)
 	}
 	tokenId := *tokenCreateRx.TokenID
-	fmt.Println(fmt.Sprintf("Created fungible token %s with ID %s", tokenName, tokenId))
+	log.Printf("Created fungible token %s with ID %s", tokenName, tokenId)
 
 	// Associate User2 with the Token
 	associateUser2Tx, err := hedera.NewTokenAssociateTransaction().
@@ -60,13 +59,13 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	fmt.Println("Associated", user2.AccountId, "with token", tokenId, associateUser2Rx.Status)
+	log.Println("Associated", user2.AccountId, "with token", tokenId, associateUser2Rx.Status)
 
 	//Check the balance before the transfer for the treasury account
 	balanceCheckTreasury, err := hedera.NewAccountBalanceQuery().
 		SetAccountID(user1.AccountId).
 		Execute(user1.C)
-	fmt.Println("Treasury balance:", balanceCheckTreasury.Tokens, "units of token ID", tokenId)
+	log.Println("Treasury balance:", balanceCheckTreasury.Tokens, "units of token ID", tokenId)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -75,7 +74,7 @@ func main() {
 	balanceCheckAlice, err := hedera.NewAccountBalanceQuery().
 		SetAccountID(user2.AccountId).
 		Execute(user2.C)
-	fmt.Println("User2's balance:", balanceCheckAlice.Tokens, "units of token ID", tokenId)
+	log.Println("User2's balance:", balanceCheckAlice.Tokens, "units of token ID", tokenId)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -96,13 +95,13 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	fmt.Println("Token transfer from Treasury to User2:", tokenTransferRx.Status)
+	log.Println("Token transfer from Treasury to User2:", tokenTransferRx.Status)
 
 	//Check the balance before the transfer for the treasury account
 	balanceCheckTreasury, err = hedera.NewAccountBalanceQuery().
 		SetAccountID(user1.AccountId).
 		Execute(user1.C)
-	fmt.Println("Treasury balance:", balanceCheckTreasury.Tokens, "units of token ID", tokenId)
+	log.Println("Treasury balance:", balanceCheckTreasury.Tokens, "units of token ID", tokenId)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -111,7 +110,7 @@ func main() {
 	balanceCheckAlice, err = hedera.NewAccountBalanceQuery().
 		SetAccountID(user2.AccountId).
 		Execute(user2.C)
-	fmt.Println("User2's balance:", balanceCheckAlice.Tokens, "units of token ID", tokenId)
+	log.Println("User2's balance:", balanceCheckAlice.Tokens, "units of token ID", tokenId)
 	if err != nil {
 		log.Fatalln(err)
 	}

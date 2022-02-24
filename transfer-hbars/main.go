@@ -1,9 +1,9 @@
 package main
 
 import (
-	"fmt"
 	"github.com/hashgraph/hedera-sdk-go/v2"
 	client "hedera-playground/_client"
+	"log"
 )
 
 func main() {
@@ -23,5 +23,5 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(receipt.Status)
+	log.Println(receipt.Status)
 }

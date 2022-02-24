@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/hashgraph/hedera-sdk-go/v2"
 	client "hedera-playground/_client"
 	"io/ioutil"
@@ -81,7 +80,7 @@ func main() {
 		log.Fatalln(err)
 	}
 	tokenId := *tokenCreateRx.TokenID
-	fmt.Println(fmt.Sprintf("Created fungible token %s with ID %s", "Stoyan Kolev Coin", tokenId))
+	log.Printf("Created fungible token %s with ID %s", "Stoyan Kolev Coin", tokenId)
 
 	// Associate the token with the receiver's account
 	tokenIdSol := tokenId.ToSolidityAddress()
