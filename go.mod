@@ -2,10 +2,7 @@ module hedera-playground
 
 go 1.17
 
-require (
-	github.com/hashgraph/hedera-sdk-go/v2 v2.9.0
-	github.com/joho/godotenv v1.4.0
-)
+require github.com/hashgraph/hedera-sdk-go/v2 v2.9.0
 
 require (
 	github.com/btcsuite/btcd v0.20.1-beta // indirect
